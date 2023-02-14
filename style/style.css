@@ -1,0 +1,83 @@
+*{
+  cursor: none;
+}
+
+html, body{
+    height: 100vh;
+    overflow: hidden;
+}
+
+body {
+    background-color: black;
+    margin: 0;
+}
+
+.container{
+    height: 100%;
+    width: 100%;
+}
+
+.eva01{
+    position: absolute;
+    left: 20px;
+    bottom: 0;
+    width: 118px;
+    height: 200px;
+    background-image: url('../res/eva_01.gif');
+    background-size: cover;
+}
+
+#cursor{
+    position: relative;
+    margin: 0;
+    width: 150px;
+    height: 20px;
+    background-image: url('../res/cursor.png');
+    background-size: contain;
+    background-position: top left;
+    background-repeat: no-repeat;
+    transform-origin: left center;
+  }
+
+  .box1{
+    position: fixed;
+    left: 500px;
+    top: 500px;
+    width: 50px;
+    height: 50px;
+    background-image: url('../res/ramiel_01.gif');
+    background-size: cover;
+  }
+
+  .line{
+    position: relative;
+    left: 50%;
+    top: 50%;
+    width: 100px;
+    height: 2px;
+    background-color: chartreuse;
+    transform-origin: left;
+  }
+
+  .axisX{
+    position: absolute;
+    top: 0;
+    width: 1px;
+    background-color: red;
+  }
+
+  .axisY{
+    position: absolute;
+    left: 0;
+    height: 1px;
+    background-color: red;
+  }
+
+  @keyframes rotate {
+    0%{
+        transform: rotate(0deg);
+    }
+    0%{
+        transform: rotate(360deg);
+    }
+  }
