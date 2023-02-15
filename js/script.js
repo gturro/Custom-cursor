@@ -1,33 +1,31 @@
-const height = $(window).height();
-const width = $(window).width();
+const windowHeight = $(window).height();
+const windowWidth = $(window).width();
 
-const cursor = $("#cursor");
+const cursor = $("#cursor"),
+       box1 = $('.box1'),
+       line = $('.line');
 
-const line = $('.line');
+//AXIS ASSETS
+const axisX = $('.axisX'),
+       axisY = $('.axisY'),
+       cordX = $(axisX).children('span'),
+       cordY = $(axisY).children('span');
 
-//GRID
-const axisX = $('.axisX');
-const axisY = $('.axisY');
-const cordX = $(axisX).children('span');
-const cordY = $(axisY).children('span');
-
-//centerScreen
-const box1 = $('.box1');
-
-let mouseY = 0;
-let mouseX = 0;
+var mouseY = 0,
+    mouseX = 0;
 
 
-const positionElement = (e)=> {
-  let boxX = getLeft(box1) + box1.width()/2;
-  let boxY = getTop(box1) + box1.height()/2;
+function positionElement(e) {
+  //Get center X and Y of box
+  var boxX = box1.offset().left + box1.width()/2;
+  var boxY = box1.offset().top + box1.height()/2;
 
   if (e != null){
     mouseY = e.clientY;
     mouseX = e.clientX;
   }
   
-  //Distance mouse-center
+  //Distance mouse-centerBox
   const dx = mouseX - boxX;
   const dy = boxY - mouseY;
   const d = Math.sqrt(dx**2 + dy**2);
@@ -36,10 +34,10 @@ const positionElement = (e)=> {
        theta *= 180 / Math.PI;          
   if (theta < 0) theta += 360;  
 
-
+  //Cursor visuals
   cursor.css('transform', `translate3d(${mouseX}px, ${mouseY}px, 0) rotateZ(${theta}deg)`);
 
-  //DEBUG VISUALS
+  //Axis visuals
   line.css ('transform', `rotate(${theta}deg)`);
   line.css ('width', d +"px");
 
@@ -47,7 +45,7 @@ const positionElement = (e)=> {
   axisX.css ('height', `${mouseY}px`);
   cordX.html(`${mouseX} px`);
 
-  if (mouseX > width-parseInt(cordX.css('width'))){
+  if (mouseX > windowWidth-parseInt(cordX.css('width'))){
     cordX.css('left', '-100px');
   } else {
     cordX.css('left', '0');
@@ -65,44 +63,34 @@ const positionElement = (e)=> {
 }
 
 
-function getLeft(element){
-  return element.offset().left
-}
-
-function getTop(element){
-  return element.offset().top;
-}
-
-
-function makeNewPosition(){
-  //window sizes
-  var h = $(window).height() - 50;
-  var w = $(window).width() - 50;
-
-  //new random X and Y inside window
-  var nh = Math.floor(Math.random() * h);
-  var nw = Math.floor(Math.random() * w);
-  
-  return [nh,nw];    
-}
-
-
 function animateDiv(){
-  var newP = makeNewPosition();
+  var newP = makeNewPosition(); // [0]->Y | [1]->X
   var oldq = box1.offset();
   var speed = calcSpeed([oldq.top, oldq.left], newP);
   
-  box1.animate({ top: newP[0], left: newP[1] }, speed, "swing", function(){
+  box1.animate({ top: newP[0], left: newP[1] }, speed, "swing", ()=>{
     animateDiv();        
   });
 };
 
+function makeNewPosition(){
+  //window sizes
+  var y = windowHeight - 50; // 50 is the box width
+  var x = windowWidth - 50;
+
+  //new random X and Y inside window
+  var nY = Math.floor(Math.random() * y);
+  var nX = Math.floor(Math.random() * x);
+  
+  return [nY,nX];    
+}
+
 function calcSpeed(prev, next) {
+
+  var dx = Math.abs(prev[1] - next[1]);
+  var dy = Math.abs(prev[0] - next[0]);
   
-  var x = Math.abs(prev[1] - next[1]);
-  var y = Math.abs(prev[0] - next[0]);
-  
-  var greatest = x > y ? x : y;
+  var greatest = dx > dy ? dx : dy;
   
   var speedModifier = .2;
 
@@ -111,22 +99,19 @@ function calcSpeed(prev, next) {
   return speed;
 
 }
+// Start box animation
+$(document).ready(()=>{ animateDiv(); });
 
-$(document).ready(function(){
-  animateDiv();
-});
-
-
-window.addEventListener('mousemove', positionElement);
-
+// Loop to update positions when mouse is not moving
 function loop(timestamp) {
-  var dt = (timestamp - lastRender)/100;
   
   positionElement();
 
   lastRender = timestamp
   window.requestAnimationFrame(loop);
 }
-
 var lastRender = 0;
 window.requestAnimationFrame(loop);
+
+// Update positions on mousemove
+window.addEventListener('mousemove', positionElement);
