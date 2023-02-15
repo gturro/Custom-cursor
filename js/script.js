@@ -1,13 +1,15 @@
-const height = document.body.clientHeight;
-const width = document.body.clientWidth;
+const height = $(window).height();
+const width = $(window).width();
 
-const cursor = document.querySelector('#cursor');
+const cursor = $("#cursor");
 
-const line = document.querySelector('.line');
+const line = $('.line');
 
 //GRID
-const axisX = document.querySelector('.axisX');
-const axisY = document.querySelector('.axisY');
+const axisX = $('.axisX');
+const axisY = $('.axisY');
+const cordX = $(axisX).children('span');
+const cordY = $(axisY).children('span');
 
 //centerScreen
 const box1 = $('.box1');
@@ -35,17 +37,31 @@ const positionElement = (e)=> {
   if (theta < 0) theta += 360;  
 
 
-  cursor.style.transform = `translate3d(${mouseX}px, ${mouseY}px, 0) rotateZ(${theta}deg)`;
+  cursor.css('transform', `translate3d(${mouseX}px, ${mouseY}px, 0) rotateZ(${theta}deg)`);
 
   //DEBUG VISUALS
-  line.style.transform = `rotate(${theta}deg)`;
-  line.style.width = d +"px";
+  line.css ('transform', `rotate(${theta}deg)`);
+  line.css ('width', d +"px");
 
-  axisX.style.left = `${mouseX}px`;
-  axisX.style.height = `${mouseY}px`
+  axisX.css ('left', `${mouseX}px`);
+  axisX.css ('height', `${mouseY}px`);
+  cordX.html(`${mouseX} px`);
 
-  axisY.style.top = `${mouseY}px`;
-  axisY.style.width = `${mouseX}px`
+  if (mouseX > width-parseInt(cordX.css('width'))){
+    cordX.css('left', '-100px');
+  } else {
+    cordX.css('left', '0');
+  }
+
+  axisY.css ('top', `${mouseY}px`);
+  axisY.css ('width', `${mouseX}px`);
+  cordY.html(`${mouseY} px`);
+  
+  if (mouseY > 0 + parseInt(cordX.css('height'))*2){
+    cordY.css('top', '-20px');
+  } else {
+    cordY.css('top', '0');
+  }
 }
 
 

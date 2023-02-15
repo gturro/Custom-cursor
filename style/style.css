@@ -2,29 +2,16 @@
   cursor: none;
 }
 
-html, body{
+body{
     height: 100vh;
     overflow: hidden;
-}
-
-body {
-    background-color: black;
     margin: 0;
+    background-color: black;
 }
 
 .container{
     height: 100%;
     width: 100%;
-}
-
-.eva01{
-    position: absolute;
-    left: 20px;
-    bottom: 0;
-    width: 118px;
-    height: 200px;
-    background-image: url('../res/eva_01.gif');
-    background-size: cover;
 }
 
 #cursor{
@@ -53,31 +40,42 @@ body {
     position: relative;
     left: 50%;
     top: 50%;
-    width: 100px;
-    height: 2px;
-    background-color: chartreuse;
+    width: 0;
+    height: 1px;
+    background-color: #8600ff;
     transform-origin: left;
   }
 
-  .axisX{
+  .axisX, .axisY{
     position: absolute;
+    background-color: red;
+  }
+
+  .axisX{
     top: 0;
     width: 1px;
-    background-color: red;
   }
-
   .axisY{
-    position: absolute;
     left: 0;
     height: 1px;
-    background-color: red;
   }
 
-  @keyframes rotate {
-    0%{
-        transform: rotate(0deg);
-    }
-    0%{
-        transform: rotate(360deg);
-    }
+
+  .axisX span, .axisY span{
+    position: absolute;
+    width: 100px;
+    height: 20px;
+    color: red;
+    font-family: 'Monument Extended', sans-serif;
+    letter-spacing: 2px;
+    font-weight: bold;
+    text-align: center;
+  }
+
+  .axisX span{
+    top: 4%;
+  }
+  .axisY span{
+    left: 4%;
+    top: -20px;
   }
