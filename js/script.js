@@ -17,8 +17,8 @@ var mouseY = 0,
 
 function positionElement(e) {
   //Get center X and Y of box
-  var boxX = box1.offset().left + box1.width()/2;
-  var boxY = box1.offset().top + box1.height()/2;
+  var boxX = window.innerWidth/2;
+  var boxY = window.innerHeight/2;
 
   if (e != null){
     mouseY = e.clientY;
@@ -38,8 +38,8 @@ function positionElement(e) {
   cursor.css('transform', `translate3d(${mouseX}px, ${mouseY}px, 0) rotateZ(${theta}deg)`);
 
   //Axis visuals
-  line.css ('transform', `rotate(${theta}deg)`);
-  line.css ('width', d +"px");
+  // line.css ('transform', `rotate(${theta}deg)`);
+  // line.css ('width', d +"px");
 
   axisX.css ('left', `${mouseX}px`);
   axisX.css ('height', `${mouseY}px`);
@@ -115,3 +115,113 @@ window.requestAnimationFrame(loop);
 
 // Update positions on mousemove
 window.addEventListener('mousemove', positionElement);
+
+// Define an array to store shooting boxes
+var shootingBoxes = [];
+
+// Shoot rectangle on mouse button press
+$(document).on('mousedown', (event) => {
+  var shootingBoxTop = mouseY;
+  var shootingBoxLeft = mouseX;
+  var shootingBoxWidth = 10;
+  var shootingBoxHeight = 10;
+  var shootingBox = $('<div>')
+    .addClass('shooting-box-player')
+    .css({
+      top: shootingBoxTop + 'px',
+      left: shootingBoxLeft + 'px',
+      width: shootingBoxWidth + 'px',
+      height: shootingBoxHeight + 'px'
+    })
+    .appendTo('.container');
+    
+  var angle = Math.atan2(mouseY - (box1.offset().top + box1.height()/2), mouseX - (box1.offset().left + box1.width()/2)); // Calculate the angle between box1 center and the mouse position
+  var speed = 5; // Adjust the speed of the shooting box movement
+
+  // Create an object to store the shooting box and its movement information
+  var shootingBoxObj = {
+    element: shootingBox,
+    shooter: 'player',
+    top: shootingBoxTop,
+    left: shootingBoxLeft,
+    angle: angle,
+    speed: speed
+  };
+
+  // Add the shooting box object to the array
+  shootingBoxes.push(shootingBoxObj);
+});
+
+function shootBox() {
+  var shootingBoxTop = box1.offset().top + box1.height() / 2;
+  var shootingBoxLeft = box1.offset().left + box1.width() / 2;
+  var shootingBoxWidth = 50;
+  var shootingBoxHeight = 50;
+  var shootingBox = $('<div>')
+    .addClass('shooting-box-enemy')
+    .css({
+      top: shootingBoxTop + 'px',
+      left: shootingBoxLeft + 'px',
+      width: shootingBoxWidth + 'px',
+      height: shootingBoxHeight + 'px'
+    })
+    .appendTo('.container');
+
+  var angle = Math.atan2(mouseY - shootingBoxTop, mouseX - shootingBoxLeft); // Calculate the angle between shooting box center and the mouse position
+  var speed = 10; // Adjust the speed of the shooting box movement
+
+  // Create an object to store the shooting box and its movement information
+  var shootingBoxObj = {
+    element: shootingBox,
+    shooter: 'enemy',
+    top: shootingBoxTop,
+    left: shootingBoxLeft,
+    angle: angle,
+    speed: speed
+  };
+
+  // Add the shooting box object to the array
+  shootingBoxes.push(shootingBoxObj);
+
+  // Schedule the next shooting after 2 to 3 seconds randomly
+  var nextShootDelay = Math.random() * 1000 + 2000;
+  setTimeout(shootBox, nextShootDelay);
+}
+
+// Start shooting boxes from box1
+shootBox();
+
+// Update the position of shooting boxes continuously
+function updateShootingBoxes() {
+  shootingBoxes.forEach((shootingBoxObj) => {
+    if (shootingBoxObj.shooter == 'enemy') {
+      shootingBoxObj.top += Math.sin(shootingBoxObj.angle) * shootingBoxObj.speed;
+      shootingBoxObj.left += Math.cos(shootingBoxObj.angle) * shootingBoxObj.speed;
+    } else {
+      shootingBoxObj.top -= Math.sin(shootingBoxObj.angle) * shootingBoxObj.speed;
+      shootingBoxObj.left -= Math.cos(shootingBoxObj.angle) * shootingBoxObj.speed;
+    }
+
+    shootingBoxObj.element.css({
+      top: shootingBoxObj.top + 'px',
+      left: shootingBoxObj.left + 'px'
+    });
+
+    // Check if the shooting box reaches the boundaries of the window, then remove it
+    if (
+      shootingBoxObj.top < 0 ||
+      shootingBoxObj.top > windowHeight ||
+      shootingBoxObj.left < 0 ||
+      shootingBoxObj.left > windowWidth
+    ) {
+      shootingBoxObj.element.remove();
+      shootingBoxes.splice(shootingBoxes.indexOf(shootingBoxObj), 1);
+    }
+  });
+
+  // Repeat the update every 10 milliseconds
+  requestAnimationFrame(updateShootingBoxes);
+}
+
+// Start updating shooting boxes positions
+updateShootingBoxes();

@@ -13,6 +13,14 @@ body{
     height: 100%;
     width: 100%;
 }
+.hp {
+  position: absolute;
+  top: 40px;
+  left: 80px;
+}
+.hp img {
+  width: 50px;
+}
 
 #cursor{
     position: relative;
@@ -78,4 +86,15 @@ body{
   .axisY span{
     left: 4%;
     top: -20px;
+  }
+
+  .shooting-box-player {
+    position: absolute;
+    background-color: #8600ff;
+    border-radius: 20px;
+  }
+  .shooting-box-enemy{
+    position: absolute;
+    background-color: red;
+    border-radius: 20px;
   }
