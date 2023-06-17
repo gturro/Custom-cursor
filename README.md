@@ -5,4 +5,5 @@
 
 # Custom-cursor
 
+<p>This started as a playground to test how to add a custom cursor and now i've added some random movment and shooting and stuff and i have not idea where this is going...</p>
 
